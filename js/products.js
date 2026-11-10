@@ -120,7 +120,7 @@ function criarCard(item) {
   info.className = "product-info";
   const tipo = document.createElement("p");
   tipo.className = "product-category";
-  tipo.textContent = item.categoria === "tenis" ? "Tênis" : item.categoria === "bolsas" ? "Bolsas" : "Camisas";
+  tipo.textContent = item.categoria === "tenis" ? "Tênis" : item.categoria === "bolsas" ? "Bolsas" : item.categoria === "camisas" ? "Camisas" : "Blusas";
   const nome = document.createElement("h3");
   nome.textContent = item.nome;
   const consultar = document.createElement("a");
@@ -187,7 +187,7 @@ async function carregarCatalogo() {
     catalogo = dados.filter((item) => item && item.nome && item.imagem && item.categoria && item.marca);
     const categorias = [...new Set(catalogo.map((item) => item.categoria))]
       .sort((a, b) => a.localeCompare(b, "pt-BR"))
-      .map((item) => ({ value: item, label: item === "tenis" ? "Tênis" : item === "bolsas" ? "Bolsas" : item === "camisas" ? "Camisas" : item }));
+      .map((item) => ({ value: item, label: item === "tenis" ? "Tênis" : item === "bolsas" ? "Bolsas" : item === "camisas" ? "Camisas" : item === "blusas" ? "Blusas" : item }));
     const marcas = [...new Set(catalogo.map((item) => item.marca))]
       .sort((a, b) => a.localeCompare(b, "pt-BR"))
       .map((item) => ({ value: item, label: item }));
@@ -208,6 +208,7 @@ if (vitrine && pesquisa && categoria && marca && contador) {
   if (ano) ano.textContent = new Date().getFullYear();
   carregarCatalogo();
 }
+
 
 
 
