@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#17121f">
+  <meta name="description" content="Conheça o catálogo Paulinho Store e consulte disponibilidade diretamente pelo WhatsApp.">
+  <title>Paulinho Store — Sneakers & Streetwear</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/products.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#catalogo">Pular para o catálogo</a>
+  <div class="announcement"><span>PAULINHO STORE</span><span>Consulte modelos e disponibilidade pelo WhatsApp</span></div>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#inicio" aria-label="Paulinho Store — início">
+        <img src="img/logo.png" alt="" width="46" height="46">
+        <span>PAULINHO<span class="brand-light">STORE</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Navegação principal">
+        <a href="#inicio">Início</a>
+        <a href="#catalogo">Catálogo</a>
+        <a href="#sobre">Sobre</a>
+      </nav>
+      <a class="header-contact" href="https://wa.me/5561983808540" target="_blank" rel="noopener noreferrer" aria-label="Fale com a loja pelo WhatsApp">
+        <span class="status-dot" aria-hidden="true"></span> Fale com a loja <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span> SNEAKERS & STREETWEAR</p>
+        <h1 id="hero-title">Seu próximo<br>par está <em>aqui.</em></h1>
+        <p class="hero-description">Explore o catálogo da Paulinho Store e tire suas dúvidas direto com a gente.</p>
+        <a class="button button-primary" href="#catalogo">Explorar catálogo <span aria-hidden="true">↓</span></a>
+        <div class="hero-note"><span class="note-line"></span><span>Atendimento direto pelo WhatsApp</span></div>
+      </div>
+      <div class="hero-visual" aria-label="Tênis em destaque no catálogo">
+        <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+        <div class="hero-image-wrap"><img src="img/tenis/adidas/adidas-001.jpg" alt="Adidas Model 001" fetchpriority="high"></div>
+        <div class="hero-stamp"><span>PAULINHO</span><strong>01</strong><span>STORE</span></div>
+        <span class="hero-caption">SELEÇÃO DA LOJA&nbsp; / &nbsp;SNEAKERS</span>
+      </div>
+      <div class="hero-index" aria-hidden="true">01 — 469</div>
+    </section>
+
+    <section class="catalog-section" id="catalogo" aria-labelledby="catalog-title">
+      <div class="section-heading">
+        <div><p class="eyebrow"><span></span> ENCONTRE O SEU</p><h2 id="catalog-title">Tênis <em>por marca</em></h2></div>
+        <p class="section-intro">Veja os modelos disponíveis no catálogo. Para consultar numeração e disponibilidade, fale com a loja.</p>
+      </div>
+      <div class="catalog-toolbar">
+        <label class="search-box" for="pesquisa"><span class="search-icon" aria-hidden="true"></span><input id="pesquisa" type="search" placeholder="Buscar por modelo..." autocomplete="off"><kbd>⌕</kbd></label>
+        <label class="category-box" for="categoria"><span>Categoria</span><select id="categoria"><option value="todas">Todas</option></select></label>
+        <label class="category-box" for="marca"><span>Marca</span><select id="marca"><option value="todas">Todas</option></select></label>
+        <p class="catalog-count" id="catalog-count" aria-live="polite">Carregando catálogo</p>
+      </div>
+      <div class="products-grid" id="produtos" aria-live="polite" aria-busy="true"></div>
+    </section>
+
+    <section class="contact-band" id="sobre">
+      <div class="contact-mark" aria-hidden="true">P.</div>
+      <div><p class="eyebrow"><span></span> PRECISA DE AJUDA?</p><h2>Vamos encontrar<br>o modelo certo.</h2></div>
+      <a class="button button-light" href="https://wa.me/5561983808540?text=Ol%C3%A1%2C%20vim%20pelo%20site%20da%20Paulinho%20Store." target="_blank" rel="noopener noreferrer">Chamar no WhatsApp <span aria-hidden="true">↗</span></a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand footer-brand" href="#inicio"><img src="img/logo.png" alt="" width="36" height="36"><span>PAULINHO<span class="brand-light">STORE</span></span></a>
+    <p>Catálogo visual. Consulte detalhes e disponibilidade com a loja.</p>
+    <a href="#inicio" class="back-top">Voltar ao topo ↑</a>
+    <small>© <span id="current-year"></span> Paulinho Store</small>
+  </footer>
+</body>
+</html>
+
