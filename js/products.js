@@ -5,6 +5,51 @@ const categoria = document.querySelector("#categoria");
 const marca = document.querySelector("#marca");
 const contador = document.querySelector("#catalog-count");
 let catalogo = [];
+const galeriaDialogo = document.createElement("dialog");
+galeriaDialogo.className = "gallery-dialog";
+const galeriaFechar = document.createElement("button");
+galeriaFechar.type = "button";
+galeriaFechar.className = "gallery-close";
+galeriaFechar.textContent = "Fechar";
+galeriaFechar.setAttribute("aria-label", "Fechar galeria");
+const galeriaAnterior = document.createElement("button");
+galeriaAnterior.type = "button";
+galeriaAnterior.className = "gallery-dialog-step";
+galeriaAnterior.textContent = "‹";
+galeriaAnterior.setAttribute("aria-label", "Foto anterior");
+const galeriaProxima = document.createElement("button");
+galeriaProxima.type = "button";
+galeriaProxima.className = "gallery-dialog-step";
+galeriaProxima.textContent = "›";
+galeriaProxima.setAttribute("aria-label", "Próxima foto");
+const galeriaImagem = document.createElement("img");
+const galeriaPosicao = document.createElement("p");
+galeriaPosicao.className = "gallery-dialog-position";
+galeriaDialogo.append(galeriaFechar, galeriaAnterior, galeriaImagem, galeriaProxima, galeriaPosicao);
+document.body.appendChild(galeriaDialogo);
+let fotosAbertas = [];
+let indiceFotoAberta = 0;
+function atualizarFotoAberta() {
+  galeriaImagem.src = encodeURI(fotosAbertas[indiceFotoAberta]);
+  galeriaImagem.alt = "Foto " + (indiceFotoAberta + 1) + " de " + fotosAbertas.length;
+  galeriaPosicao.textContent = (indiceFotoAberta + 1) + " / " + fotosAbertas.length;
+}
+function abrirGaleria(fotos, indice) {
+  fotosAbertas = fotos;
+  indiceFotoAberta = indice;
+  atualizarFotoAberta();
+  galeriaDialogo.showModal();
+}
+function moverFotoAberta(direcao) {
+  indiceFotoAberta = (indiceFotoAberta + direcao + fotosAbertas.length) % fotosAbertas.length;
+  atualizarFotoAberta();
+}
+galeriaFechar.addEventListener("click", () => galeriaDialogo.close());
+galeriaAnterior.addEventListener("click", () => moverFotoAberta(-1));
+galeriaProxima.addEventListener("click", () => moverFotoAberta(1));
+galeriaDialogo.addEventListener("click", (evento) => {
+  if (evento.target === galeriaDialogo) galeriaDialogo.close();
+});
 
 function mostrarMensagem(texto) {
   vitrine.replaceChildren();
@@ -24,7 +69,9 @@ function criarCard(item) {
   etiqueta.className = "product-label";
   etiqueta.textContent = item.marca;
   const imagem = document.createElement("img");
-  imagem.src = encodeURI(item.imagem);
+  const fotos = Array.isArray(item.imagens) && item.imagens.length ? item.imagens : [item.imagem];
+  let fotoAtual = 0;
+  imagem.src = encodeURI(fotos[fotoAtual]);
   imagem.alt = item.nome;
   imagem.loading = "lazy";
   imagem.decoding = "async";
@@ -36,12 +83,44 @@ function criarCard(item) {
     imagemArea.appendChild(fallback);
   }, { once: true });
   imagemArea.append(etiqueta, imagem);
+  if (fotos.length > 1) {
+    const controles = document.createElement("div");
+    controles.className = "gallery-controls";
+    const posicao = document.createElement("span");
+    posicao.className = "gallery-position";
+    posicao.textContent = "1 / " + fotos.length;
+    const anterior = document.createElement("button");
+    anterior.type = "button";
+    anterior.className = "gallery-step";
+    anterior.textContent = "‹";
+    anterior.setAttribute("aria-label", "Foto anterior");
+    const proxima = document.createElement("button");
+    proxima.type = "button";
+    proxima.className = "gallery-step";
+    proxima.textContent = "›";
+    proxima.setAttribute("aria-label", "Próxima foto");
+    const ampliar = document.createElement("button");
+    ampliar.type = "button";
+    ampliar.className = "gallery-open";
+    ampliar.textContent = "Ver fotos";
+    function selecionarFoto(indice) {
+      fotoAtual = (indice + fotos.length) % fotos.length;
+      imagem.src = encodeURI(fotos[fotoAtual]);
+      imagem.alt = item.nome + " — foto " + (fotoAtual + 1) + " de " + fotos.length;
+      posicao.textContent = (fotoAtual + 1) + " / " + fotos.length;
+    }
+    anterior.addEventListener("click", () => selecionarFoto(fotoAtual - 1));
+    proxima.addEventListener("click", () => selecionarFoto(fotoAtual + 1));
+    ampliar.addEventListener("click", () => abrirGaleria(fotos, fotoAtual));
+    controles.append(anterior, posicao, proxima, ampliar);
+    imagemArea.appendChild(controles);
+  }
 
   const info = document.createElement("div");
   info.className = "product-info";
   const tipo = document.createElement("p");
   tipo.className = "product-category";
-  tipo.textContent = "Tênis";
+  tipo.textContent = item.categoria === "tenis" ? "Tênis" : item.categoria === "bolsas" ? "Bolsas" : "Camisas";
   const nome = document.createElement("h3");
   nome.textContent = item.nome;
   const consultar = document.createElement("a");
@@ -108,7 +187,7 @@ async function carregarCatalogo() {
     catalogo = dados.filter((item) => item && item.nome && item.imagem && item.categoria && item.marca);
     const categorias = [...new Set(catalogo.map((item) => item.categoria))]
       .sort((a, b) => a.localeCompare(b, "pt-BR"))
-      .map((item) => ({ value: item, label: item === "tenis" ? "Tênis" : item }));
+      .map((item) => ({ value: item, label: item === "tenis" ? "Tênis" : item === "bolsas" ? "Bolsas" : item === "camisas" ? "Camisas" : item }));
     const marcas = [...new Set(catalogo.map((item) => item.marca))]
       .sort((a, b) => a.localeCompare(b, "pt-BR"))
       .map((item) => ({ value: item, label: item }));
@@ -129,3 +208,6 @@ if (vitrine && pesquisa && categoria && marca && contador) {
   if (ano) ano.textContent = new Date().getFullYear();
   carregarCatalogo();
 }
+
+
+
