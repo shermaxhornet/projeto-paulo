@@ -120,7 +120,7 @@ function criarCard(item) {
   info.className = "product-info";
   const tipo = document.createElement("p");
   tipo.className = "product-category";
-  tipo.textContent = item.categoria === "tenis" ? "Tênis" : item.categoria === "bolsas" ? "Bolsas" : item.categoria === "camisas" ? "Camisas" : "Blusas";
+  tipo.textContent = item.categoria === "tenis" ? "Tênis" : item.categoria === "bolsas" ? "Bolsas" : item.categoria === "shorts" ? "Shorts" : item.categoria === "camisas" ? "Camisas" : "Blusas";
   const nome = document.createElement("h3");
   nome.textContent = item.nome;
   const consultar = document.createElement("a");
@@ -185,9 +185,11 @@ async function carregarCatalogo() {
     const dados = await resposta.json();
     if (!Array.isArray(dados)) throw new Error("O catálogo precisa ser uma lista.");
     catalogo = dados.filter((item) => item && item.nome && item.imagem && item.categoria && item.marca);
+    const totalProdutos = document.querySelector('#total-products');
+    if (totalProdutos) totalProdutos.textContent = String(catalogo.length);
     const categorias = [...new Set(catalogo.map((item) => item.categoria))]
       .sort((a, b) => a.localeCompare(b, "pt-BR"))
-      .map((item) => ({ value: item, label: item === "tenis" ? "Tênis" : item === "bolsas" ? "Bolsas" : item === "camisas" ? "Camisas" : item === "blusas" ? "Blusas" : item }));
+      .map((item) => ({ value: item, label: item === "tenis" ? "Tênis" : item === "bolsas" ? "Bolsas" : item === "shorts" ? "Shorts" : item === "camisas" ? "Camisas" : item === "blusas" ? "Blusas" : item }));
     const marcas = [...new Set(catalogo.map((item) => item.marca))]
       .sort((a, b) => a.localeCompare(b, "pt-BR"))
       .map((item) => ({ value: item, label: item }));

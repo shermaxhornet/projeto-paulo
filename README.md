@@ -4,7 +4,7 @@ Static storefront built with HTML, CSS, and JavaScript. The site reads its catal
 
 ## Catalog fields
 
-Each product entry uses `id`, `nome`, `categoria`, `marca`, and `imagem`. Shirt entries may also include `imagens` for an interactive photo gallery. The catalog includes `tenis`, `camisas`, `blusas`, and `bolsas`; category and brand options are generated from the catalog data. No prices or availability are fabricated.
+Each product entry uses `id`, `nome`, `categoria`, `marca`, and `imagem`. Shirt entries may also include `imagens` for an interactive photo gallery. The catalog includes `tenis`, `camisas`, `blusas`, `shorts`, and `bolsas`; category and brand options are generated from the catalog data. No prices or availability are fabricated.
 
 To add a product, place its image in the matching category folder and add an entry to `data/products.json` with a unique ID and the relative image path. The brand filter updates automatically from the data.
 
