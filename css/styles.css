@@ -91,6 +91,12 @@ h1 em, h2 em { color: var(--purple); font-style: normal; }
 .product-action { width: 100%; min-height: 40px; display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding: 0 12px; border: 1px solid #e8e0ed; color: var(--purple-dark); background: white; font-size: 10px; font-weight: 700; cursor: pointer; transition: color .2s ease, background .2s ease, border-color .2s ease; }
 .product-action:hover { border-color: var(--purple-dark); color: white; background: var(--purple-dark); }
 .catalog-message { grid-column: 1 / -1; padding: 52px 20px; color: var(--muted); text-align: center; font-size: 14px; }
+.catalog-pagination { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 26px; }
+.catalog-pagination[hidden] { display: none; }
+.catalog-page-button { min-width: 96px; min-height: 40px; padding: 0 14px; border: 1px solid #e8e0ed; color: var(--purple-dark); background: white; font-size: 11px; font-weight: 700; cursor: pointer; }
+.catalog-page-button:hover:not(:disabled) { border-color: var(--purple-dark); color: white; background: var(--purple-dark); }
+.catalog-page-button:disabled { color: #aaa2ae; background: #f7f5f8; cursor: not-allowed; }
+.catalog-page-indicator { min-width: 106px; color: #817989; text-align: center; font-size: 11px; }
 .contact-band { position: relative; width: min(1320px, 89%); min-height: 275px; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 32px; margin: 0 auto 96px; padding: 48px 7%; color: white; background: #21162a; }
 .contact-band::after { position: absolute; right: 18%; bottom: -330px; width: 550px; height: 550px; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; content: ""; box-shadow: 0 0 0 50px rgba(255,255,255,.025), 0 0 0 100px rgba(255,255,255,.02); }
 .contact-band .eyebrow { color: #d2a6f0; }

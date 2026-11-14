@@ -5,6 +5,26 @@ const categoria = document.querySelector("#categoria");
 const marca = document.querySelector("#marca");
 const contador = document.querySelector("#catalog-count");
 let catalogo = [];
+let produtosFiltrados = [];
+let paginaAtual = 1;
+const ITENS_POR_PAGINA = 48;
+const paginacao = document.createElement("nav");
+paginacao.className = "catalog-pagination";
+paginacao.setAttribute("aria-label", "Paginação do catálogo");
+paginacao.hidden = true;
+const paginaAnterior = document.createElement("button");
+paginaAnterior.type = "button";
+paginaAnterior.className = "catalog-page-button";
+paginaAnterior.textContent = "Anterior";
+const indicadorPagina = document.createElement("span");
+indicadorPagina.className = "catalog-page-indicator";
+indicadorPagina.setAttribute("aria-live", "polite");
+const paginaSeguinte = document.createElement("button");
+paginaSeguinte.type = "button";
+paginaSeguinte.className = "catalog-page-button";
+paginaSeguinte.textContent = "Próxima";
+paginacao.append(paginaAnterior, indicadorPagina, paginaSeguinte);
+if (vitrine) vitrine.insertAdjacentElement("afterend", paginacao);
 const galeriaDialogo = document.createElement("dialog");
 galeriaDialogo.className = "gallery-dialog";
 const galeriaFechar = document.createElement("button");
@@ -52,6 +72,7 @@ galeriaDialogo.addEventListener("click", (evento) => {
 });
 
 function mostrarMensagem(texto) {
+  paginacao.hidden = true;
   vitrine.replaceChildren();
   const mensagem = document.createElement("p");
   mensagem.className = "catalog-message";
@@ -120,7 +141,7 @@ function criarCard(item) {
   info.className = "product-info";
   const tipo = document.createElement("p");
   tipo.className = "product-category";
-  tipo.textContent = item.categoria === "tenis" ? "Tênis" : item.categoria === "bolsas" ? "Bolsas" : item.categoria === "shorts" ? "Shorts" : item.categoria === "blusa-de-frio" ? "Blusa de frio" : item.categoria === "camisas" ? "Camisas" : "Blusas";
+  tipo.textContent = item.categoria === "tenis" ? "Tênis" : item.categoria === "bolsas" ? "Bolsas" : item.categoria === "oculos" ? "Óculos" : item.categoria === "shorts" ? "Shorts" : item.categoria === "blusa-de-frio" ? "Blusa de frio" : item.categoria === "camisas" ? "Camisas" : "Blusas";
   const nome = document.createElement("h3");
   nome.textContent = item.nome;
   const consultar = document.createElement("a");
@@ -147,12 +168,40 @@ function criarCard(item) {
 function mostrarProdutos(lista) {
   contador.textContent = lista.length + " " + (lista.length === 1 ? "modelo" : "modelos");
   if (!lista.length) {
+    paginacao.hidden = true;
     mostrarMensagem("Nenhum modelo encontrado. Tente outro termo ou filtro.");
     return;
   }
-  vitrine.replaceChildren(...lista.map(criarCard));
-  vitrine.setAttribute("aria-busy", "false");
+  produtosFiltrados = lista;
+  paginaAtual = 1;
+  renderizarPagina();
 }
+
+function renderizarPagina() {
+  const totalPaginas = Math.ceil(produtosFiltrados.length / ITENS_POR_PAGINA);
+  const inicio = (paginaAtual - 1) * ITENS_POR_PAGINA;
+  const itensDaPagina = produtosFiltrados.slice(inicio, inicio + ITENS_POR_PAGINA);
+  vitrine.replaceChildren(...itensDaPagina.map(criarCard));
+  vitrine.setAttribute("aria-busy", "false");
+  paginacao.hidden = totalPaginas <= 1;
+  indicadorPagina.textContent = "Página " + paginaAtual + " de " + totalPaginas;
+  paginaAnterior.disabled = paginaAtual <= 1;
+  paginaSeguinte.disabled = paginaAtual >= totalPaginas;
+}
+
+paginaAnterior.addEventListener("click", () => {
+  if (paginaAtual > 1) {
+    paginaAtual--;
+    renderizarPagina();
+  }
+});
+paginaSeguinte.addEventListener("click", () => {
+  const totalPaginas = Math.ceil(produtosFiltrados.length / ITENS_POR_PAGINA);
+  if (paginaAtual < totalPaginas) {
+    paginaAtual++;
+    renderizarPagina();
+  }
+});
 
 function filtrarProdutos() {
   const termo = pesquisa.value.trim().toLocaleLowerCase("pt-BR");
@@ -178,6 +227,24 @@ function preencherFiltro(seletor, valores) {
   }
 }
 
+function atualizarFiltroMarca() {
+  const marcaAnterior = marca.value;
+  const categoriaSelecionada = categoria.value;
+  const marcas = [...new Set(catalogo
+    .filter((item) => categoriaSelecionada === "todas" || item.categoria === categoriaSelecionada)
+    .map((item) => item.marca))]
+    .sort((a, b) => a.localeCompare(b, "pt-BR"))
+    .map((item) => ({ value: item, label: item }));
+
+  marca.replaceChildren();
+  const todasMarcas = document.createElement("option");
+  todasMarcas.value = "todas";
+  todasMarcas.textContent = categoriaSelecionada === "todas" ? "Todas as marcas" : "Todas as marcas da categoria";
+  marca.appendChild(todasMarcas);
+  preencherFiltro(marca, marcas);
+  marca.value = marcas.some((item) => item.value === marcaAnterior) ? marcaAnterior : "todas";
+}
+
 async function carregarCatalogo() {
   try {
     const resposta = await fetch("data/products.json");
@@ -189,12 +256,9 @@ async function carregarCatalogo() {
     if (totalProdutos) totalProdutos.textContent = String(catalogo.length);
     const categorias = [...new Set(catalogo.map((item) => item.categoria))]
       .sort((a, b) => a.localeCompare(b, "pt-BR"))
-      .map((item) => ({ value: item, label: item === "tenis" ? "Tênis" : item === "bolsas" ? "Bolsas" : item === "shorts" ? "Shorts" : item === "blusa-de-frio" ? "Blusa de frio" : item === "camisas" ? "Camisas" : item === "blusas" ? "Blusas" : item }));
-    const marcas = [...new Set(catalogo.map((item) => item.marca))]
-      .sort((a, b) => a.localeCompare(b, "pt-BR"))
-      .map((item) => ({ value: item, label: item }));
+      .map((item) => ({ value: item, label: item === "tenis" ? "Tênis" : item === "bolsas" ? "Bolsas" : item === "oculos" ? "Óculos" : item === "shorts" ? "Shorts" : item === "blusa-de-frio" ? "Blusa de frio" : item === "camisas" ? "Camisas" : item === "blusas" ? "Blusas" : item }));
     preencherFiltro(categoria, categorias);
-    preencherFiltro(marca, marcas);
+    atualizarFiltroMarca();
     filtrarProdutos();
   } catch {
     contador.textContent = "Catálogo indisponível";
@@ -204,7 +268,10 @@ async function carregarCatalogo() {
 
 if (vitrine && pesquisa && categoria && marca && contador) {
   pesquisa.addEventListener("input", filtrarProdutos);
-  categoria.addEventListener("change", filtrarProdutos);
+  categoria.addEventListener("change", () => {
+    atualizarFiltroMarca();
+    filtrarProdutos();
+  });
   marca.addEventListener("change", filtrarProdutos);
   const ano = document.querySelector("#current-year");
   if (ano) ano.textContent = new Date().getFullYear();
